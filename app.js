@@ -1,16 +1,15 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 
+import testRouter from './routes/testRoutes.js'
+
 const app = express()
 const port = 3000
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
-app.get('/api/ping', (request, response) => {
-    console.log("Pinged!")
-    response.json({ message: "Pong!"})
-})
+app.use(testRouter)
 
 const init = async () => {
     try {

@@ -8,7 +8,6 @@ const store = async (buffer) => {
             where: { name: registry.institute },
             defaults: { name: registry.institute }
         });
-        console.log(institute)
 
         const [room] = await Room.findOrCreate({
             where: { name: registry.room, institute_id: institute.id },

@@ -1,12 +1,15 @@
 import express from 'express'
 import bodyParser from 'body-parser'
+import dotenv from 'dotenv'
 
 import testRouter from './routes/testRoutes.js'
 import dataRouter from './routes/dataRouter.js'
 import database from './config/database.js'
 
+dotenv.config()
+
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3333
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))

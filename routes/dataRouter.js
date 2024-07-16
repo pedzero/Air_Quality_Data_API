@@ -6,9 +6,13 @@ const router = express.Router()
 
 router.post('/api/data', (request, response) => {
     const data = request.body
-    const sender = request.headers.host
+    let clientIp = request.headers['x-forwarded-for'] || request.socket.remoteAddress;
 
-    console.log(`Adding new content in buffer from ${sender}.`)
+    if (clientIp.startsWith('::ffff:')) {
+        clientIp = clientIp.replace('::ffff:', '');
+    }
+
+    console.log(`Adding new content in buffer from ${clientIp}.`)
     
     buffer.addDataToBuffer(data)
 

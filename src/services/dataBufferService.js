@@ -5,18 +5,31 @@ let buffer = []
 
 const addDataToBuffer = (data) => {
     const parsedData = parseRawData(data)
-    for (const registry in parsedData) {
-        buffer.push(parsedData[registry])
+
+    try {
+        if (!parsedData.length) {
+            throw new Error('Invalid data format')
+        }
+
+        parsedData.forEach(registry => {
+            buffer.push(registry)
+        })
+       
+    } catch (error) {
+        throw error
     }
 }
 
 // 30s interval for storing data into database
-setInterval(() => {
-    console.log('Storing buffer content in database...')
-    dataService.store(buffer)
-    .then(() => {
-        buffer = [];
-    })
+setInterval(async () => {
+    if (buffer.length > 0) {
+        try {
+            await dataService.store(buffer)
+            buffer = [] 
+        } catch (error) {
+            console.error('Error storing buffer content in database:', error)
+        }
+    }
 }, 30000)
 
 export default { addDataToBuffer }

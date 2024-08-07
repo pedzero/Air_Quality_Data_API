@@ -14,8 +14,8 @@ const port = process.env.PORT || 3333
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
-app.use(testRouter)
-app.use(dataRouter)
+app.use('/api', testRouter)
+app.use('/api', dataRouter)
 
 const init = async () => {
     try {

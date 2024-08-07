@@ -2,7 +2,7 @@ import express from 'express'
 
 const router = express.Router()
 
-router.get('/api/ping', (request, response) => {
+router.get('/ping', (request, response) => {
     console.log("Pinged!")
     response.json({ message: "Pong!" })
 })

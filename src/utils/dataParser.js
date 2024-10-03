@@ -2,9 +2,9 @@ function parseRawData(data) {
     const parsedData = []
 
     for (const key in data) {
-        const [institute, room, parameter] = key.split(/[-_]/)
+        const [city, institute, room, parameter] = key.split(/[-_]/)
 
-        if (!institute || !room || !parameter) {
+        if (!city || !institute || !room || !parameter) {
             throw new Error(`Invalid key format: ${key}`)
         }
 
@@ -29,6 +29,7 @@ function parseRawData(data) {
             }
 
             parsedData.push({
+                city: city.trim(),
                 institute: institute.trim(),
                 room: room.trim(),
                 parameter: parameter.trim(),

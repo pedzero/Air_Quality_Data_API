@@ -4,7 +4,6 @@ const controller = {}
 
 controller.create = (request, response) => {
     const data = request.body
-    console.log(data)
     try {
         bufferService.addDataToBuffer(data)
         response.sendStatus(200)

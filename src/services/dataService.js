@@ -1,12 +1,18 @@
+import City from '../models/City.js'
 import Institute from '../models/Institute.js'
 import Room from '../models/Room.js'
 import Parameter from '../models/Parameter.js'
 
 const store = async (buffer) => {
     for (const registry of buffer) {
+        const [city] = await City.findOrCreate({
+            where: { name: registry.city },
+            defaults: { name: registry.city }
+        })
+
         const [institute] = await Institute.findOrCreate({
-            where: { name: registry.institute },
-            defaults: { name: registry.institute }
+            where: { name: registry.institute, city_id: city.id },
+            defaults: { name: registry.institute, city_id: city.id }
         })
 
         const [room] = await Room.findOrCreate({

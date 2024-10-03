@@ -16,6 +16,10 @@ const Parameter = database.define('parameter', {
         type: Sequelize.FLOAT,
         allowNull: false
     },
+    aqi_included: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
     timestamp: {
         type: Sequelize.DATE,
         allowNull: false

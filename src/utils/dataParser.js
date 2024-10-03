@@ -2,10 +2,18 @@ function parseRawData(data) {
     const parsedData = []
 
     for (const key in data) {
-        const [city, institute, room, parameter] = key.split(/[-_]/)
+        const [city, institute, room, rawParameter] = key.split(/[-_]/)
 
-        if (!city || !institute || !room || !parameter) {
+        if (!city || !institute || !room || !rawParameter) {
             throw new Error(`Invalid key format: ${key}`)
+        }
+
+        let aqi_included = false
+        let parameter = rawParameter
+
+        if (parameter.includes('*')) {
+            aqi_included = true
+            parameter = parameter.replace('*', '')
         }
 
         let values = data[key]
@@ -34,6 +42,7 @@ function parseRawData(data) {
                 room: room.trim(),
                 parameter: parameter.trim(),
                 value: parsedValue,
+                aqi_included: aqi_included,
                 timestamp: parsedTimestamp
             })
         })

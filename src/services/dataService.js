@@ -1,28 +1,20 @@
-import City from '../models/City.js'
-import Institute from '../models/Institute.js'
-import Room from '../models/Room.js'
-import Parameter from '../models/Parameter.js'
+import CityRepository from '../repositories/CityRepository.js'
+import InstituteRepository from '../repositories/InstituteRepository.js'
+import RoomRepository from '../repositories/RoomRepository.js'
+import ParameterRepository from '../repositories/ParameterRepository.js'
 
 const store = async (buffer) => {
     for (const registry of buffer) {
-        const [city] = await City.findOrCreate({
-            where: { name: registry.city },
-            defaults: { name: registry.city }
-        })
-
-        const [institute] = await Institute.findOrCreate({
-            where: { name: registry.institute, city_id: city.id },
-            defaults: { name: registry.institute, city_id: city.id }
-        })
-
-        const [room] = await Room.findOrCreate({
-            where: { name: registry.room, institute_id: institute.id },
-            defaults: { name: registry.room, institute_id: institute.id }
-        })
-
-        await Parameter.create({
+        const [city] = await CityRepository.findOrCreate(registry.city)
+        
+        const [institute] = await InstituteRepository.findOrCreate(registry.institute, city.id)
+        
+        const [room] = await RoomRepository.findOrCreate(registry.room, institute.id)
+        
+        await ParameterRepository.create({
             name: registry.parameter,
             value: registry.value,
+            aqi_included: registry.aqi_included,
             room_id: room.id,
             timestamp: registry.timestamp
         })

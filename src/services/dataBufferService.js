@@ -20,7 +20,7 @@ const addDataToBuffer = (data) => {
     }
 }
 
-// 30s interval for storing data into database
+// 10s interval for storing data into database
 setInterval(async () => {
     if (buffer.length > 0) {
         try {
@@ -30,6 +30,6 @@ setInterval(async () => {
             console.error('Error storing buffer content in database:', error)
         }
     }
-}, 30000)
+}, 10000)
 
 export default { addDataToBuffer }

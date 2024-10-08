@@ -35,7 +35,7 @@ const calculateIAQ = async (cityName, instituteName, roomName) => {
     const aqiData = await Promise.all(parametersConfig.map(async (paramConfig) => {
         const startTime = subtractHours(dateNow, paramConfig.hoursInterval)
         const query = await ParameterRepository.getAverageValueByRoom(paramConfig.name, room.id, startTime, dateNow, true)
-        console.log(query)
+
         if (!query.name) {
             return null
         }

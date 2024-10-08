@@ -7,12 +7,24 @@ class ParameterRepository {
         return await Parameter.create(parameterData)
     }
 
-    async findByInstituteIdAndName(instituteId, name) {
+    async findByRoomIdAndName(roomId, name) {
         return await Parameter.findOne({
             where: {
-                institute_id: instituteId,
+                room_id: instituteId,
                 name: name
             }
+        })
+    }
+
+    async getLastParameters(parameterName, roomId, limit) {
+        return await Parameter.findAll({
+            attributes: ['id', 'name', 'value', 'aqi_included', 'timestamp', 'room_id'],
+            where: {
+                room_id: roomId,
+                name: parameterName
+            },
+            order: [['timestamp', 'DESC']],
+            limit: limit
         })
     }
 

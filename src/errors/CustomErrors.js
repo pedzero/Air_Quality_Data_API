@@ -21,4 +21,12 @@ class ValidationError extends BadRequestError {
     }
 }
 
-export { BadRequestError, DataProcessingError, ValidationError }
+class NotFoundError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "NotFoundError";
+        this.statusCode = 404;
+    }
+}
+
+export { BadRequestError, DataProcessingError, ValidationError, NotFoundError }

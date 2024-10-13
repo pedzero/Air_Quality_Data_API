@@ -3,6 +3,7 @@ import InstituteRepository from '../repositories/InstituteRepository.js'
 import RoomRepository from '../repositories/RoomRepository.js'
 import ParameterRepository from '../repositories/ParameterRepository.js'
 import subtractHours from '../utils/subtractHours.js'
+import { NotFoundError } from '../errors/CustomErrors.js'
 
 // name, interval, thresholds (ug/m3)
 const parametersConfig = [
@@ -17,17 +18,17 @@ const parametersConfig = [
 const calculateIAQ = async (cityName, instituteName, roomName) => {
     const city = await CityRepository.findByName(cityName)
     if (!city) {
-        throw new Error(`City '${cityName}' not found.`)
+        throw new NotFoundError(`City '${cityName}' not found.`)
     }
 
     const institute = await InstituteRepository.findByCityIdAndName(city.id, instituteName)
     if (!institute) {
-        throw new Error(`Institute '${instituteName}' not found in '${cityName}'.`)
+        throw new NotFoundError(`Institute '${instituteName}' not found in '${cityName}'.`)
     }
 
     const room = await RoomRepository.findByInstituteIdAndName(institute.id, roomName)
     if (!room) {
-        throw new Error(`Room '${roomName}' not found in '${instituteName}'.`)
+        throw new NotFoundError(`Room '${roomName}' not found in '${instituteName}'.`)
     }
 
     const dateNow = new Date(Date.now())

@@ -13,6 +13,12 @@ class CityRepository {
             where: { name: name }
         })
     }
+
+    async findAll() {
+        return await City.findAll({
+            attributes: ['id', 'name']
+        })
+    }
 }
 
 export default new CityRepository()

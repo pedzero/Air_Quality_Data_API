@@ -6,6 +6,7 @@ import testRouter from './routes/testRoutes.js'
 import dataRouter from './routes/dataRouter.js'
 import aqiRouter from './routes/airQualityRouter.js'
 import parametersRouter from './routes/parametersRouter.js'
+import roomsRouter from './routes/roomsRouter.js'
 import database from './config/database.js'
 
 dotenv.config()
@@ -20,6 +21,7 @@ app.use('/api', testRouter)
 app.use('/api', dataRouter)
 app.use('/api', aqiRouter)
 app.use('/api', parametersRouter)
+app.use('/api', roomsRouter)
 
 const init = async () => {
     try {

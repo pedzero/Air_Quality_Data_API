@@ -22,6 +22,15 @@ class RoomRepository {
             }
         })
     }
+
+    async findAllByInstituteId(instituteId) {
+        return await Room.findAll({
+            attributes: ['id', 'name', 'institute_id'],
+            where: {
+                institute_id: instituteId
+            }
+        })
+    }
 }
 
 export default new RoomRepository()

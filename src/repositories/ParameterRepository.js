@@ -10,7 +10,7 @@ class ParameterRepository {
     async findByRoomIdAndName(roomId, name) {
         return await Parameter.findOne({
             where: {
-                room_id: instituteId,
+                room_id: roomId,
                 name: name
             }
         })

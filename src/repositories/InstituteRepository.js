@@ -22,6 +22,15 @@ class InstituteRepository {
             }
         })
     }
+
+    async findAllByCityId(cityId) {
+        return await Institute.findAll({
+            attributes: ['id', 'name', 'city_id'],
+            where: {
+                city_id: cityId
+            }
+        })
+    }
 }
 
 export default new InstituteRepository()

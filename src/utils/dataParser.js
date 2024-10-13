@@ -1,3 +1,5 @@
+import { ValidationError } from '../errors/CustomErrors.js'
+
 function parseRawData(data) {
     const parsedData = []
 
@@ -5,7 +7,7 @@ function parseRawData(data) {
         const [city, institute, room, rawParameter] = key.split(/[-_]/)
 
         if (!city || !institute || !room || !rawParameter) {
-            throw new Error(`Invalid key format: ${key}`)
+            throw new ValidationError(`Invalid key format: ${key}`)
         }
 
         let aqi_included = false
@@ -26,14 +28,14 @@ function parseRawData(data) {
             const [value, timestamp] = valueTimestamp.split('@')
 
             if (value === undefined || timestamp === undefined) {
-                throw new Error(`Invalid value or timestamp in key: ${key}`)
+                throw new ValidationError(`Invalid value or timestamp in key: ${key}`)
             }
 
             const parsedValue = parseFloat(value)
             const parsedTimestamp = new Date(timestamp)
 
             if (isNaN(parsedValue) || isNaN(parsedTimestamp.getTime())) {
-                throw new Error(`Invalid value or timestamp format in key: ${key}`)
+                throw new ValidationError(`Invalid value or timestamp format in key: ${key}`)
             }
 
             parsedData.push({
@@ -46,6 +48,10 @@ function parseRawData(data) {
                 timestamp: parsedTimestamp
             })
         })
+    }
+
+    if (parsedData.length === 0) {
+        throw new ValidationError('No valid data found after parsing.')
     }
 
     return parsedData

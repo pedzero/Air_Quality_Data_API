@@ -19,7 +19,12 @@ const retrieve = async (cityName, instituteName, roomName, parameterName, limit)
         throw new Error(`Room '${roomName}' not found in '${instituteName}'.`)
     }
 
-    const parameters = await ParameterRepository.getLastParameters(parameterName, room.id, limit)
+    let limitAsInt = parseInt(limit, 10)
+    if (!limit?.trim() || limitAsInt <= 0) {
+        limitAsInt = 1
+    }
+
+    const parameters = await ParameterRepository.getLastParameters(parameterName, room.id, limitAsInt)
 
     return parameters
 }

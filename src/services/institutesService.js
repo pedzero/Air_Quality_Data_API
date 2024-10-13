@@ -2,7 +2,7 @@ import CityRepository from '../repositories/CityRepository.js'
 import InstituteRepository from '../repositories/InstituteRepository.js'
 import { NotFoundError } from '../errors/CustomErrors.js'
 
-const retrieveAll = async (cityName, instituteName) => {
+const retrieveAll = async (cityName) => {
     const city = await CityRepository.findByName(cityName)
     if (!city) {
         throw new NotFoundError(`City '${cityName}' not found.`)

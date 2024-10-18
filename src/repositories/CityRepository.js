@@ -8,8 +8,9 @@ class CityRepository {
         })
     }
     
-    async findByName(name) {
+    async findOneByName(name) {
         return await City.findOne({
+            attributes: ['id', 'name'],
             where: { name: name }
         })
     }

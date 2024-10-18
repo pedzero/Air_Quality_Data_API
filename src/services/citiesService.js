@@ -1,12 +1,17 @@
 import CityRepository from '../repositories/CityRepository.js'
-import { NotFoundError } from '../errors/CustomErrors.js'
 
-const retrieveAll = async () => {
-    const cities = await CityRepository.findAll()
+const retrieve = async (filters) => {
+    const { name } = filters
 
-    return cities
+    if (!name?.trim()) {
+        const cities = await CityRepository.findAll()
+        return cities
+    } 
+
+    const city = await CityRepository.findOneByName(name)
+    return city
 }
 
 export default {
-    retrieveAll
+    retrieve
 }

@@ -28,12 +28,12 @@ const retrieve = async (filters) => {
 
     const city_query = await CityRepository.findOneByName(city.trim())
     if (!city) {
-        throw new NotFoundError(`City '${cityName}' not found.`)
+        throw new NotFoundError(`City '${city.trim()}' not found.`)
     }
 
     const institute_query = await InstituteRepository.findOneByCityIdAndName(city_query.id, institute.trim())
     if (!institute) {
-        throw new NotFoundError(`Institute '${instituteName}' not found in '${cityName}'.`)
+        throw new NotFoundError(`Institute '${institute.trim()}' not found in '${city.trim()}'.`)
     }
 
     return await RoomRepository.findAllByInstituteId(institute_query.id)

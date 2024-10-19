@@ -9,7 +9,7 @@ const retrieve = async (filters) => {
     if (!city?.trim() && !institute?.trim() && !name?.trim() && !instituteId?.trim()) {
         return await RoomRepository.findAll()
     }
-
+    
     if (!city?.trim() && !institute?.trim()) {
         const instituteIdAsInt = parseInt(instituteId, 10)
         if (!instituteIdAsInt || instituteIdAsInt < 1) {
@@ -27,16 +27,19 @@ const retrieve = async (filters) => {
     }
 
     const city_query = await CityRepository.findOneByName(city.trim())
-    if (!city) {
+    if (!city_query) {
         throw new NotFoundError(`City '${city.trim()}' not found.`)
     }
 
     const institute_query = await InstituteRepository.findOneByCityIdAndName(city_query.id, institute.trim())
-    if (!institute) {
+    if (!institute_query) {
         throw new NotFoundError(`Institute '${institute.trim()}' not found in '${city.trim()}'.`)
     }
 
-    return await RoomRepository.findAllByInstituteId(institute_query.id)
+    if (!name?.trim()) {
+        return await RoomRepository.findAllByInstituteId(institute_query.id)
+    }
+    return await RoomRepository.findOneByInstituteIdAndName(institute_query.id, name.trim())
 }
 
 export default {

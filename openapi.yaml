@@ -1,0 +1,314 @@
+openapi: 3.0.0
+info:
+  title: Air Quality Data API
+  description: API for retrieving and managing air quality data from various distributed ScadaBR servers.
+  version: 1.0.0
+servers:
+- url: http://167.234.237.124:3333
+  description: Main server
+paths:
+  /api/data:
+    post:
+      summary: Receive air quality data
+      description: "Receives data in the format `{\"city_institute_room_parameter\":\"99.9@2000-01-20T12:45:00Z\"}` as sent by the ScadaBR Publisher."
+      requestBody:
+        description: Data from ScadaBR Publisher
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                city_institute_room_parameter: 99.9@2000-01-20T12:45:00Z
+        required: true
+      responses:
+        "200":
+          description: Data successfully received
+  /api/aqi:
+    get:
+      summary: Get Air Quality Index (AQI)
+      description: "Returns the calculated AQI based on parameters marked with '*' by the ScadaBR Publishers. Either `roomId` must be provided or the combination of `city`, `institute`, and `room` is required."
+      parameters:
+      - name: roomId
+        in: query
+        description: The ID of the room
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: city
+        in: query
+        description: The name of the city (required if roomId is not provided)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: institute
+        in: query
+        description: The name of the institute (required if roomId is not provided)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: room
+        in: query
+        description: The name of the room (required if roomId is not provided)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: AQI successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+              example:
+                overall:
+                  index: 2
+                  category: Moderate
+                parameters:
+                - parameter: PM10
+                  value: 50.8
+                  aqi:
+                    index: 2
+                    category: Moderate
+                  timestamp: 2000-01-20T12:45:00Z
+  /api/cities:
+    get:
+      summary: Retrieve cities
+      description: Retrieves a list of all cities or filters by city name.
+      parameters:
+      - name: name
+        in: query
+        description: The name of the city
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of cities retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_1'
+              example:
+              - id: 1
+                name: Passos
+              - id: 2
+                name: Belo Horizonte
+  /api/institutes:
+    get:
+      summary: Retrieve institutes
+      description: "Retrieves a list of institutes. If filtering, `city` is required to find institutes within a specific city."
+      parameters:
+      - name: city
+        in: query
+        description: The name of the city (required if filtering by institute)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: The name of the institute
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of institutes retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_1'
+              example:
+              - id: 1
+                name: IFSULDEMINAS
+                city_id: 1
+              - id: 2
+                name: IFMG
+                city_id: 2
+  /api/rooms:
+    get:
+      summary: Retrieve rooms
+      description: Retrieves a list of rooms. Either `instituteId` must be provided or a combination of `city` and `institute`.
+      parameters:
+      - name: instituteId
+        in: query
+        description: The ID of the institute
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: city
+        in: query
+        description: The name of the city (required if instituteId is not provided)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: institute
+        in: query
+        description: The name of the institute (required if instituteId is not provided)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: The name of the room
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of rooms retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_1'
+              example:
+              - id: 1
+                name: Externo
+                institute_id: 1
+              - id: 2
+                name: Laboratório 1
+                institute_id: 1
+  /api/parameters:
+    get:
+      summary: Retrieve parameters
+      description: "Retrieves parameters (air quality metrics) for a room. Either `roomId` must be provided or a combination of `city`, `institute`, and `room`."
+      parameters:
+      - name: roomId
+        in: query
+        description: The ID of the room
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: city
+        in: query
+        description: The name of the city (required if roomId is not provided)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: institute
+        in: query
+        description: The name of the institute (required if roomId is not provided)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: room
+        in: query
+        description: The name of the room (required if roomId is not provided)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: "The name of the parameter (e.g., PM10)"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: The maximum number of records to return
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of parameters retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_2'
+              example:
+              - id: 1
+                name: CO2
+                value: 400.1
+                aqi_included: false
+                timestamp: 2000-01-20T12:45:00Z
+                room_id: 1
+components:
+  schemas:
+    inline_response_200:
+      type: object
+      properties:
+        overall:
+          type: object
+          properties:
+            index:
+              type: integer
+            category:
+              type: string
+        parameters:
+          type: array
+          items:
+            type: object
+            properties:
+              parameter:
+                type: string
+              value:
+                type: number
+              aqi:
+                type: object
+                properties:
+                  index:
+                    type: integer
+                  category:
+                    type: string
+              timestamp:
+                type: string
+                format: date-time
+    inline_response_200_1:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    inline_response_200_2:
+      type: object
+      properties:
+        parameter:
+          type: string
+        value:
+          type: number
+        timestamp:
+          type: string
+          format: date-time

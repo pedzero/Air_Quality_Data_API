@@ -22,7 +22,7 @@ This repository contains an API developed to receive, store, and process air qua
 
 4. Parameters used to calculate the AQI must be marked with an **asterisk** (*).
 
-   Example: `Rio de Janeiro_UFRJ__Hardware Lab_PM10*`.
+   Example: `Rio de Janeiro_UFRJ_Hardware Lab_PM10*`.
 
 > **Note:** For correct AQI calculation, parameters must be sent in the unit **µg/m³**.
 

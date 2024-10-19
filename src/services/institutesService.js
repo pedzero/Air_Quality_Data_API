@@ -2,17 +2,27 @@ import CityRepository from '../repositories/CityRepository.js'
 import InstituteRepository from '../repositories/InstituteRepository.js'
 import { NotFoundError } from '../errors/CustomErrors.js'
 
-const retrieveAll = async (cityName) => {
-    const city = await CityRepository.findByName(cityName)
-    if (!city) {
-        throw new NotFoundError(`City '${cityName}' not found.`)
+const retrieve = async (filters) => {
+    const { city, name } = filters
+    console.log(filters)
+
+    if (!city?.trim() && !name?.trim()) {
+        console.log("All")
+        return await InstituteRepository.findAll()
     }
 
-    const institutes = await InstituteRepository.findAllByCityId(city.id)
+    let city_query = await CityRepository.findOneByName(city.trim())
+    if (!city_query) {
+        throw new NotFoundError(`City '${city}' not found.`)
+    }
 
-    return institutes
+    if (!name?.trim()) {
+        return await InstituteRepository.findAllByCityId(city_query.id)
+    }
+
+    return await InstituteRepository.findOneByCityIdAndName(city_query.id, name.trim())
 }
 
 export default {
-    retrieveAll
+    retrieve
 }

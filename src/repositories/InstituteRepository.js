@@ -14,12 +14,9 @@ class InstituteRepository {
         })
     }
     
-    async findByCityIdAndName(cityId, name) {
-        return await Institute.findOne({
-            where: {
-                city_id: cityId,
-                name: name
-            }
+    async findAll() {
+        return await Institute.findAll({
+            attributes: ['id', 'name', 'city_id']
         })
     }
 
@@ -28,6 +25,16 @@ class InstituteRepository {
             attributes: ['id', 'name', 'city_id'],
             where: {
                 city_id: cityId
+            }
+        })
+    }
+
+    async findOneByCityIdAndName(cityId, name) {
+        return await Institute.findOne({
+            attributes: ['id', 'name', 'city_id'],
+            where: {
+                city_id: cityId,
+                name: name
             }
         })
     }

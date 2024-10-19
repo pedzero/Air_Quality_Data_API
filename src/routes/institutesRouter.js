@@ -4,6 +4,6 @@ import institutesController from '../controllers/institutesController.js'
 
 const router = express.Router()
 
-router.get('/institutes', institutesController.retrieveAll)
+router.get('/institutes', institutesController.retrieve)
 
 export default router

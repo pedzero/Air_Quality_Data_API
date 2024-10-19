@@ -16,12 +16,12 @@ const parametersConfig = [
 ]
 
 const calculateIAQ = async (cityName, instituteName, roomName) => {
-    const city = await CityRepository.findByName(cityName)
+    const city = await CityRepository.findOneByName(cityName)
     if (!city) {
         throw new NotFoundError(`City '${cityName}' not found.`)
     }
 
-    const institute = await InstituteRepository.findByCityIdAndName(city.id, instituteName)
+    const institute = await InstituteRepository.findOneByCityIdAndName(city.id, instituteName)
     if (!institute) {
         throw new NotFoundError(`Institute '${instituteName}' not found in '${cityName}'.`)
     }

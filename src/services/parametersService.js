@@ -4,30 +4,46 @@ import RoomRepository from '../repositories/RoomRepository.js'
 import ParameterRepository from '../repositories/ParameterRepository.js'
 import { NotFoundError } from '../errors/CustomErrors.js'
 
-const retrieve = async (cityName, instituteName, roomName, parameterName, limit) => {
-    const city = await CityRepository.findByName(cityName)
-    if (!city) {
-        throw new NotFoundError(`City '${cityName}' not found.`)
-    }
-
-    const institute = await InstituteRepository.findByCityIdAndName(city.id, instituteName)
-    if (!institute) {
-        throw new NotFoundError(`Institute '${instituteName}' not found in '${cityName}'.`)
-    }
-
-    const room = await RoomRepository.findByInstituteIdAndName(institute.id, roomName)
-    if (!room) {
-        throw new NotFoundError(`Room '${roomName}' not found in '${instituteName}'.`)
-    }
-
+const retrieve = async (filters) => {
+    const { city, institute, room, roomId, name, limit } = filters
+    
     let limitAsInt = parseInt(limit, 10)
-    if (!limit?.trim() || limitAsInt <= 0) {
+    if (!limitAsInt || limitAsInt <= 0) {
         limitAsInt = 1
     }
 
-    const parameters = await ParameterRepository.getLastParameters(parameterName, room.id, limitAsInt)
+    if (!city?.trim() && !institute?.trim() && !room?.trim()) {
+        const roomIdAsInt = parseInt(roomId, 10)
+        if (!roomIdAsInt || roomIdAsInt < 1) {
+            throw new ValidationError(`Unable to parse RoomId`)
+        }
+        if (!name?.trim()) {
+            return await ParameterRepository.findAllByRoomId(roomIdAsInt)
+        }
+        return await ParameterRepository.findNByRoomIdAndName(roomIdAsInt, name.trim(), limitAsInt)
+        
+    }
 
-    return parameters
+    if (!city?.trim() || !institute?.trim() || !room?.trim() || !name?.trim()) {
+        throw new ValidationError("Unable to produce a search with the given parameters.")
+    }
+
+    const city_query = await CityRepository.findOneByName(city)
+    if (!city_query) {
+        throw new NotFoundError(`City '${city.trim()}' not found.`)
+    }
+
+    const institute_query = await InstituteRepository.findOneByCityIdAndName(city_query.id, institute.trim())
+    if (!institute_query) {
+        throw new NotFoundError(`Institute '${institute.trim()}' not found in '${city.trim()}'.`)
+    }
+
+    const room_query = await RoomRepository.findOneByInstituteIdAndName(institute_query.id, room.trim())
+    if (!room_query) {
+        throw new NotFoundError(`Room '${room.trim()}' not found in '${institute.trim()}'.`)
+    }
+
+    return await ParameterRepository.findNByRoomIdAndName(room_query.id, name.trim(), limitAsInt)
 }
 
 export default {

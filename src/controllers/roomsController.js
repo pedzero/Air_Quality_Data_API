@@ -3,14 +3,11 @@ import { ValidationError, NotFoundError } from "../errors/CustomErrors.js"
 
 const controller = {}
 
-controller.retrieveAll = async (request, response) => {
-    const { city, institute } = request.query
+controller.retrieve = async (request, response) => {
+    const { city, institute, name, instituteId } = request.query
 
     try {
-        if (!city?.trim() || !institute?.trim()) {
-            throw new ValidationError("Missing required query parameters. Please provide 'city' and 'institute' in the query string.")
-        }
-        const rooms = await roomsService.retrieveAll(city, institute)
+        const rooms = await roomsService.retrieve({ city, institute, name, instituteId })
         response.status(200).json(rooms)
     } catch (error) {
         if (error instanceof NotFoundError) {

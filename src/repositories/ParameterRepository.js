@@ -38,7 +38,7 @@ class ParameterRepository {
         })
     }
 
-    async getAverageValueByRoom(parameterName, roomId, startTime, endTime, aqiIncluded) {
+    async getAverageValueByRoomIdAndName(roomId, parameterName, startTime, endTime, aqiIncluded) {
         const whereConditions = {
             name: parameterName,
             room_id: roomId,           

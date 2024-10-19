@@ -4,13 +4,10 @@ import { ValidationError, NotFoundError } from '../errors/CustomErrors.js'
 const controller = {}
 
 controller.generate = async (request, response) => {
-    const { city, institute, room } = request.query
+    const { city, institute, room, roomId } = request.query
 
     try {
-        if (!city?.trim() || !institute?.trim() || !room?.trim()) {
-            throw new ValidationError("Missing required query parameters. Please provide 'city', 'institute', and 'room' in the query string.")
-        }
-        const aqiData = await airQualityService.calculateIAQ(city, institute, room)
+        const aqiData = await airQualityService.calculateIAQ({ city, institute, room, roomId })
         return response.status(200).json(aqiData)
     } catch (error) {
         if (error instanceof NotFoundError) {

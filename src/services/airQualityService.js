@@ -3,7 +3,7 @@ import InstituteRepository from '../repositories/InstituteRepository.js'
 import RoomRepository from '../repositories/RoomRepository.js'
 import ParameterRepository from '../repositories/ParameterRepository.js'
 import subtractHours from '../utils/subtractHours.js'
-import { NotFoundError } from '../errors/CustomErrors.js'
+import { NotFoundError, ValidationError } from '../errors/CustomErrors.js'
 
 // name, interval, thresholds (ug/m3)
 const parametersConfig = [
@@ -15,32 +15,48 @@ const parametersConfig = [
     { name: 'CO', hoursInterval: 8, thresholds: [10000, 13000, 15000, 17000] },
 ]
 
-const calculateIAQ = async (cityName, instituteName, roomName) => {
-    const city = await CityRepository.findOneByName(cityName)
-    if (!city) {
-        throw new NotFoundError(`City '${cityName}' not found.`)
+const calculateIAQ = async (filters) => {
+    const { city, institute, room, roomId } = filters
+
+    if ((!city?.trim() || !institute?.trim() || !room?.trim()) && !roomId?.trim()) {
+        throw new ValidationError("Unable to produce a search with the given parameters.")
     }
 
-    const institute = await InstituteRepository.findOneByCityIdAndName(city.id, instituteName)
-    if (!institute) {
-        throw new NotFoundError(`Institute '${instituteName}' not found in '${cityName}'.`)
-    }
+    let roomIdAsInt
+    if (roomId?.trim()) {
+        roomIdAsInt = parseInt(roomId, 10)
+        if (!roomIdAsInt || roomIdAsInt < 1) {
+            throw new ValidationError(`Unable to parse RoomId`)
+        }
+    } else {
+        const city_query = await CityRepository.findOneByName(city.trim())
+        if (!city_query) {
+            throw new NotFoundError(`City '${cityName}' not found.`)
+        }
 
-    const room = await RoomRepository.findByInstituteIdAndName(institute.id, roomName)
-    if (!room) {
-        throw new NotFoundError(`Room '${roomName}' not found in '${instituteName}'.`)
+        const institute_query = await InstituteRepository.findOneByCityIdAndName(city_query.id, institute.trim())
+        if (!institute_query) {
+            throw new NotFoundError(`Institute '${institute.trim()}' not found in '${city}'.`)
+        }
+
+        const room_query = await RoomRepository.findOneByInstituteIdAndName(institute_query.id, room.trim())
+        if (!room_query) {
+            throw new NotFoundError(`Room '${room.trim()}' not found in '${institute.trim()}'.`)
+        }
+
+        roomIdAsInt = room_query.id
     }
 
     const dateNow = new Date(Date.now())
 
     const aqiData = await Promise.all(parametersConfig.map(async (paramConfig) => {
         const startTime = subtractHours(dateNow, paramConfig.hoursInterval)
-        const query = await ParameterRepository.getAverageValueByRoom(paramConfig.name, room.id, startTime, dateNow, true)
+        const query = await ParameterRepository.getAverageValueByRoomIdAndName(roomIdAsInt, paramConfig.name, startTime, dateNow, true)
 
         if (!query.name) {
             return null
         }
-        
+
         const dataValues = query.dataValues
 
         const aqi = airQualityIndex(dataValues.averageValue, paramConfig.thresholds)
@@ -52,13 +68,13 @@ const calculateIAQ = async (cityName, instituteName, roomName) => {
         }
     }))
 
-    const filteredData = aqiData.filter(data => data !== null);
-    const overall = calculateOverall(filteredData);
+    const filteredData = aqiData.filter(data => data !== null)
+    const overall = calculateOverall(filteredData)
 
     return {
         overall: overall,
         parameters: filteredData
-    };
+    }
 }
 
 const airQualityIndex = (value, thresholds) => {
@@ -95,20 +111,20 @@ const mapAQIToCategory = (index) => {
 }
 
 const calculateOverall = (aqiData) => {
-    let worstIndex = 0;
-    let worstCategory = "Unknown";
+    let worstIndex = 0
+    let worstCategory = "Unknown"
 
     aqiData.forEach((data) => {
         if (data.aqi.index > worstIndex) {
-            worstIndex = data.aqi.index;
-            worstCategory = data.aqi.category;
+            worstIndex = data.aqi.index
+            worstCategory = data.aqi.category
         }
-    });
+    })
 
     return {
         index: worstIndex,
         category: worstCategory
-    };
+    }
 }
 
 export default {

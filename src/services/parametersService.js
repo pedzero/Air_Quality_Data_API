@@ -2,7 +2,7 @@ import CityRepository from '../repositories/CityRepository.js'
 import InstituteRepository from '../repositories/InstituteRepository.js'
 import RoomRepository from '../repositories/RoomRepository.js'
 import ParameterRepository from '../repositories/ParameterRepository.js'
-import { NotFoundError } from '../errors/CustomErrors.js'
+import { NotFoundError, ValidationError } from '../errors/CustomErrors.js'
 
 const retrieve = async (filters) => {
     const { city, institute, room, roomId, name, limit } = filters
@@ -18,7 +18,7 @@ const retrieve = async (filters) => {
             throw new ValidationError(`Unable to parse RoomId`)
         }
         if (!name?.trim()) {
-            return await ParameterRepository.findAllByRoomId(roomIdAsInt)
+            return await ParameterRepository.findAllDistinctNamesByRoomId(roomIdAsInt)
         }
         return await ParameterRepository.findNByRoomIdAndName(roomIdAsInt, name.trim(), limitAsInt)
         

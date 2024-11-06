@@ -3,14 +3,26 @@ import InstituteRepository from '../repositories/InstituteRepository.js'
 import { NotFoundError, ValidationError } from '../errors/CustomErrors.js'
 
 const retrieve = async (filters) => {
-    const { city, name } = filters
+    const { city, name, cityId } = filters
 
-    if (!city?.trim() && !name?.trim()) {
+    const cityIdAsInt = parseInt(cityId, 10)
+    if (cityId && (!cityIdAsInt || cityIdAsInt < 1)) {
+        throw new ValidationError('Unable to parse cityId.')
+    }
+
+    if (!cityIdAsInt && !city?.trim() && !name?.trim()) {
         return await InstituteRepository.findAll()
     }
 
+    if (cityIdAsInt) {
+        if (!name?.trim()) {
+            return await InstituteRepository.findAllByCityId(cityIdAsInt)
+        }
+        return await InstituteRepository.findOneByCityIdAndName(cityIdAsInt, name.trim())
+    }
+
     if (!city?.trim()) {
-        throw new ValidationError("Unable to produce a search with the given parameters.")
+        throw new ValidationError('Unable to produce a search with the given parameters.')
     }
 
     const city_query = await CityRepository.findOneByName(city.trim())

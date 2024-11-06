@@ -105,22 +105,30 @@ paths:
                 name: Passos
               - id: 2
                 name: Belo Horizonte
-  /api/institutes:
+    /api/institutes:
     get:
       summary: Retrieve institutes
-      description: "Retrieves a list of institutes. If filtering, `city` is required to find institutes within a specific city."
+      description: "Retrieves a list of institutes. Supports filtering by `city` or `cityId` to find institutes within a specific city, as well as filtering by both `city` and `name`."
       parameters:
       - name: city
         in: query
-        description: The name of the city (required if filtering by institute)
+        description: The name of the city (required if filtering by institute name or city)
         required: false
         style: form
         explode: true
         schema:
           type: string
+      - name: cityId
+        in: query
+        description: The ID of the city (alternative to `city` for filtering by city)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
       - name: name
         in: query
-        description: The name of the institute
+        description: The name of the institute (optional filter within a specified city)
         required: false
         style: form
         explode: true

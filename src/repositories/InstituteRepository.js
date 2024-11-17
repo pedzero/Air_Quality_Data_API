@@ -29,6 +29,15 @@ class InstituteRepository {
         })
     }
 
+    async findById(id) {
+        return await Institute.findOne({
+            attributes: ['id', 'name', 'city_id'],
+            where: {
+                id: id
+            }
+        })
+    }
+
     async findOneByCityIdAndName(cityId, name) {
         return await Institute.findOne({
             attributes: ['id', 'name', 'city_id'],

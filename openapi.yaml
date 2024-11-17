@@ -118,6 +118,14 @@ paths:
       summary: Retrieve institutes
       description: "Retrieves a list of institutes. Supports filtering by `city` or `cityId` to find institutes within a specific city, as well as filtering by both `city` and `name`."
       parameters:
+      - name: id
+        in: query
+        description: The id of the institute
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
       - name: city
         in: query
         description: The name of the city (required if filtering by institute name or city)

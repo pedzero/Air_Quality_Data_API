@@ -1,6 +1,6 @@
 import citiesService from "../services/citiesService.js"
 
-import { ValidationError } from "../errors/CustomErrors.js"
+import { NotFoundError, ValidationError } from "../errors/CustomErrors.js"
 
 const controller = {}
 
@@ -10,7 +10,12 @@ controller.retrieve = async (request, response) => {
         const cities = await citiesService.retrieve({ name, id })
         response.status(200).json(cities)
     } catch (error) {
-        if (error instanceof ValidationError) {
+        if (error instanceof NotFoundError) {
+            return response.status(error.statusCode).json({
+                error: error.name,
+                message: error.message
+            })
+        } else if (error instanceof ValidationError) {
             return response.status(error.statusCode).json({
                 error: error.name,
                 message: error.message

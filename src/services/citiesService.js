@@ -1,13 +1,5 @@
 import CityRepository from '../repositories/CityRepository.js'
-import { ValidationError } from '../errors/CustomErrors.js'
-
-const validateId = (id) => {
-    const idAsInt = parseInt(id, 10)
-    if (isNaN(idAsInt) || idAsInt < 1) {
-        throw new ValidationError('Invalid ID. ID must be a positive integer greater than 0.')
-    }
-    return idAsInt
-}
+import validateId from '../utils/validateId.js'
 
 const retrieve = async (filters) => {
     const { name, id } = filters

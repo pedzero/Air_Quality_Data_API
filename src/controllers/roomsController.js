@@ -4,10 +4,10 @@ import { ValidationError, NotFoundError } from "../errors/CustomErrors.js"
 const controller = {}
 
 controller.retrieve = async (request, response) => {
-    const { city, institute, name, instituteId } = request.query
+    const { city, institute, name, instituteId, id } = request.query
 
     try {
-        const rooms = await roomsService.retrieve({ city, institute, name, instituteId })
+        const rooms = await roomsService.retrieve({ city, institute, name, instituteId, id })
         response.status(200).json(rooms)
     } catch (error) {
         if (error instanceof NotFoundError) {

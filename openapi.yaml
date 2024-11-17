@@ -171,6 +171,14 @@ paths:
       summary: Retrieve rooms
       description: Retrieves a list of rooms. Either `instituteId` must be provided or a combination of `city` and `institute`.
       parameters:
+      - name: id
+        in: query
+        description: The ID of the room
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
       - name: instituteId
         in: query
         description: The ID of the institute

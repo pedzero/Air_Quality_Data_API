@@ -19,6 +19,15 @@ class RoomRepository {
             attributes: ['id', 'name', 'institute_id']
         })
     }
+
+    async findById(id) {
+        return await Room.findOne({
+            attributes: ['id', 'name', 'institute_id'],
+            where: {
+                id: id
+            }
+        })
+    }
     
     async findOneByInstituteIdAndName(instituteId, name) {
         return await Room.findOne({

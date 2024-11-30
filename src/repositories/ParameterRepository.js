@@ -1,6 +1,6 @@
 import Parameter from '../models/Parameter.js'
 import sequelize from '../config/database.js'
-import { Op } from 'sequelize'
+import { col, fn, literal, Op } from 'sequelize'
 
 class ParameterRepository {
     async create(parameterData) {
@@ -14,9 +14,9 @@ class ParameterRepository {
                 room_id: roomId
             },
             group: ['name', 'aqi_included'],
-        });
+        })
     }
-    
+
 
     async findOneByRoomIdAndName(roomId, name) {
         return await Parameter.findOne({
@@ -43,7 +43,7 @@ class ParameterRepository {
     async getAverageValueByRoomIdAndName(roomId, parameterName, startTime, endTime, aqiIncluded) {
         const whereConditions = {
             name: parameterName,
-            room_id: roomId,           
+            room_id: roomId,
             timestamp: {
                 [Op.between]: [startTime, endTime]
             }
@@ -63,6 +63,41 @@ class ParameterRepository {
 
         return result
     }
+
+    async findAggregatedByRoomAndParameter(roomId, parameter, aqiIncluded, startDate, endDate, intervalSeconds) {
+        if (!roomId || !parameter || !aqiIncluded || !startDate || !endDate || !intervalSeconds) {
+            throw new Error("Missing required parameters for aggregated query")
+        }
+    
+        const results = await Parameter.findAll({
+            attributes: [
+                [
+                    sequelize.fn(
+                        'DATE_ADD',
+                        sequelize.literal('FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(timestamp) / :intervalSeconds) * :intervalSeconds)'),
+                        sequelize.literal('INTERVAL 0 SECOND')
+                    ),
+                    'bucket_start',
+                ],
+                [sequelize.fn('AVG', sequelize.col('value')), 'average_value'],
+                [sequelize.fn('MAX', sequelize.col('value')), 'max_value'],
+                [sequelize.fn('MIN', sequelize.col('value')), 'min_value'],
+            ],
+            where: {
+                room_id: roomId,
+                name: parameter,
+                timestamp: {
+                    [Op.between]: [startDate, endDate],
+                },
+                ...(aqiIncluded && { aqi_included: aqiIncluded }),
+            },
+            replacements: { intervalSeconds },
+            group: ['bucket_start'],
+            order: [[sequelize.literal('bucket_start'), 'ASC']],
+        })
+        
+        return results
+    }  
 }
 
 export default new ParameterRepository()

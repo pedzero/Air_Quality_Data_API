@@ -78,6 +78,77 @@ paths:
                     index: 2
                     category: Moderate
                   timestamp: 2000-01-20T12:45:00Z
+  /api/history:
+    get:
+      summary: Get Parameter History
+      description: "Returns an approximation of the values ​​of a parameter based on ranges."
+      parameters:
+      - name: roomId
+        in: query
+        description: The ID of the room
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: parameter
+        in: query
+        description: The name of the parameter
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: aqiIncluded
+        in: query
+        description: Parameter value, whether aqi_included or not
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: start
+        in: query
+        description: Start of interval in timezone
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: end
+        in: query
+        description: End of interval in timezone
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: precision
+        in: query
+        description: Number of buckets the interval will be divided into
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: History successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_1'
+              example:
+              - bucket_start: "2024-10-20T00:00:00.000Z"
+                average_value: 1000.0
+                max_value: 1500.0
+                min_value: 50.0
+              - bucket_start: "2024-10-20T01:00:00.000Z"
+                average_value: 2000.0
+                max_value: 2500.0
+                min_value: 500.0
   /api/cities:
     get:
       summary: Retrieve cities

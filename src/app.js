@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import chalk from 'chalk';
 import ora from 'ora';
+import cors from 'cors';
 
 import dataRouter from './routes/dataRouter.js';
 import citiesRouter from './routes/citiesRouter.js';
@@ -18,6 +19,8 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3333;
+
+app.use(cors());
 
 // request counters
 let requestCounts = { GET: 0, POST: 0 };

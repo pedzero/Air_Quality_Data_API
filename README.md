@@ -36,9 +36,13 @@ This repository contains an API developed to receive, store, and process air qua
    
    PORT=<api_port>
 
+   DELETE_PASSWORD=<your_password>
+
 4. **Start the API:**
    ```bash
    npm start
+
+> **Note:** When dealing with a large volume of data, the use of indexes in the database is mandatory. Check out 'indexes_events.sql', it has some indexes that optimize queries and an event to delete old parameters.
 
 ## Configuring Publishers in ScadaBR
 

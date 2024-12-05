@@ -47,6 +47,12 @@ class InstituteRepository {
             }
         })
     }
+
+    async destroy(id) {
+        return await Institute.destroy({
+            where: { id: id }
+        })
+    }
 }
 
 export default new InstituteRepository()

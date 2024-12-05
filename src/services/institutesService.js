@@ -43,6 +43,18 @@ const retrieve = async (filters) => {
     return await InstituteRepository.findOneByCityIdAndName(cityQuery.id, name.trim())
 }
 
+const destroy = async (filters) => {
+    const { id } = filters
+
+    const validId = validateId(id)
+    const result = await InstituteRepository.destroy(validId)
+    if (result) {
+        return `Institute '${id}' deleted successfully.`
+    }
+    return `Institute '${id}' deletion failed. The ID may not exist.`
+}
+
 export default {
     retrieve,
+    destroy,
 }

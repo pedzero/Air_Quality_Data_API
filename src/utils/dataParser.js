@@ -4,7 +4,7 @@ function parseRawData(data) {
     const parsedData = []
 
     for (const key in data) {
-        const [city, institute, room, rawParameter] = key.split(/[-_]/)
+        const [city, institute, room, rawParameter] = key.split(/[_]/)
 
         if (!city || !institute || !room || !rawParameter) {
             throw new ValidationError(`Invalid key format: ${key}`)

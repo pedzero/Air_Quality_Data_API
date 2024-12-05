@@ -17,7 +17,8 @@ const Room = database.define('room', {
         references: {
             model: 'institutes',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
     }
 })
 

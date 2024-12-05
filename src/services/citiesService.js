@@ -21,6 +21,18 @@ const retrieve = async (filters) => {
     return await CityRepository.findAll()
 }
 
+const destroy = async (filters) => {
+    const { id } = filters
+
+    const validId = validateId(id)
+    const result = await CityRepository.destroy(validId)
+    if (result) {
+        return `City '${id}' deleted successfully.`
+    }
+    return `City '${id}' deletion failed. The ID may not exist.`
+}
+
 export default {
     retrieve,
+    destroy,
 }

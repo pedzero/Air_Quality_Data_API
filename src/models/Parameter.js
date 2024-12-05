@@ -29,7 +29,8 @@ const Parameter = database.define('parameter', {
         references: {
             model: 'rooms',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
     }
 })
 

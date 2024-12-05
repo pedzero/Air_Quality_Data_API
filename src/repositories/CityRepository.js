@@ -14,7 +14,7 @@ class CityRepository {
             where: { id: id }
         })
     }
-    
+
     async findOneByName(name) {
         return await City.findOne({
             attributes: ['id', 'name'],
@@ -25,6 +25,12 @@ class CityRepository {
     async findAll() {
         return await City.findAll({
             attributes: ['id', 'name']
+        })
+    }
+
+    async destroy(id) {
+        return await City.destroy({
+            where: { id: id }
         })
     }
 }

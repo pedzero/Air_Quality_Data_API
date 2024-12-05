@@ -17,7 +17,8 @@ const Institute = database.define('institute', {
         references: {
             model: 'cities',
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
     }
 })
  

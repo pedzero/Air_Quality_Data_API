@@ -47,6 +47,12 @@ class RoomRepository {
             }
         })
     }
+
+    async destroy(id) {
+        return await Room.destroy({
+            where: { id: id }
+        })
+    }
 }
 
 export default new RoomRepository()

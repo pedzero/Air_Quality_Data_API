@@ -48,6 +48,18 @@ const retrieve = async (filters) => {
     throw new ValidationError('Unable to produce a search with the given parameters.')
 }
 
+const destroy = async (filters) => {
+    const { id } = filters
+
+    const validId = validateId(id)
+    const result = await RoomRepository.destroy(validId)
+    if (result) {
+        return `Room '${id}' deleted successfully.`
+    }
+    return `Room '${id}' deletion failed. The ID may not exist.`
+}
+
 export default {
     retrieve,
+    destroy,
 }

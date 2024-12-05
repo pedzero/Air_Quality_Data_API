@@ -4,13 +4,13 @@ info:
   description: API for retrieving and managing air quality data from various distributed ScadaBR servers.
   version: 1.0.0
 servers:
-- url: http://167.234.237.124:3333
-  description: Main server
+  - url: http://167.234.237.124:3333
+    description: Main server
 paths:
   /api/data:
     post:
       summary: Receive air quality data
-      description: "Receives data in the format `{\"city_institute_room_parameter\":\"99.9@2000-01-20T12:45:00Z\"}` as sent by the ScadaBR Publisher."
+      description: 'Receives data in the format `{"city_institute_room_parameter":"99.9@2000-01-20T12:45:00Z"}` as sent by the ScadaBR Publisher.'
       requestBody:
         description: Data from ScadaBR Publisher
         content:
@@ -28,109 +28,109 @@ paths:
       summary: Get Air Quality Index (AQI)
       description: "Returns the calculated AQI based on parameters marked with '*' by the ScadaBR Publishers. Either `roomId` must be provided or the combination of `city`, `institute`, and `room` is required."
       parameters:
-      - name: roomId
-        in: query
-        description: The ID of the room
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: city
-        in: query
-        description: The name of the city (required if roomId is not provided)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: institute
-        in: query
-        description: The name of the institute (required if roomId is not provided)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: room
-        in: query
-        description: The name of the room (required if roomId is not provided)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
+        - name: roomId
+          in: query
+          description: The ID of the room
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: city
+          in: query
+          description: The name of the city (required if roomId is not provided)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: institute
+          in: query
+          description: The name of the institute (required if roomId is not provided)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: room
+          in: query
+          description: The name of the room (required if roomId is not provided)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
       responses:
         "200":
           description: AQI successfully retrieved
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: "#/components/schemas/inline_response_200"
               example:
                 overall:
                   index: 2
                   category: Moderate
                 parameters:
-                - parameter: PM10
-                  value: 50.8
-                  aqi:
-                    index: 2
-                    category: Moderate
-                  timestamp: 2000-01-20T12:45:00Z
+                  - parameter: PM10
+                    value: 50.8
+                    aqi:
+                      index: 2
+                      category: Moderate
+                    timestamp: 2000-01-20T12:45:00Z
   /api/history:
     get:
       summary: Get Parameter History
       description: "Returns an approximation of the values ​​of a parameter based on ranges."
       parameters:
-      - name: roomId
-        in: query
-        description: The ID of the room
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: parameter
-        in: query
-        description: The name of the parameter
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: aqiIncluded
-        in: query
-        description: Parameter value, whether aqi_included or not
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: boolean
-      - name: start
-        in: query
-        description: Start of interval in timezone
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: end
-        in: query
-        description: End of interval in timezone
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: precision
-        in: query
-        description: Number of buckets the interval will be divided into
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
+        - name: roomId
+          in: query
+          description: The ID of the room
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: parameter
+          in: query
+          description: The name of the parameter
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: aqiIncluded
+          in: query
+          description: Parameter value, whether aqi_included or not
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: boolean
+        - name: start
+          in: query
+          description: Start of interval in timezone
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: end
+          in: query
+          description: End of interval in timezone
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: precision
+          in: query
+          description: Number of buckets the interval will be divided into
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
       responses:
         "200":
           description: History successfully retrieved
@@ -139,37 +139,37 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/inline_response_200_1'
+                  $ref: "#/components/schemas/inline_response_200_1"
               example:
-              - bucket_start: "2024-10-20T00:00:00.000Z"
-                average_value: 1000.0
-                max_value: 1500.0
-                min_value: 50.0
-              - bucket_start: "2024-10-20T01:00:00.000Z"
-                average_value: 2000.0
-                max_value: 2500.0
-                min_value: 500.0
+                - bucket_start: "2024-10-20T00:00:00.000Z"
+                  average_value: 1000.0
+                  max_value: 1500.0
+                  min_value: 50.0
+                - bucket_start: "2024-10-20T01:00:00.000Z"
+                  average_value: 2000.0
+                  max_value: 2500.0
+                  min_value: 500.0
   /api/cities:
     get:
       summary: Retrieve cities
       description: Retrieves a list of all cities or filters by city id or name.
       parameters:
-      - name: id
-        in: query
-        description: The id of the city
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: name
-        in: query
-        description: The name of the city
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
+        - name: id
+          in: query
+          description: The id of the city
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          description: The name of the city
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
       responses:
         "200":
           description: List of cities retrieved
@@ -178,49 +178,74 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/inline_response_200_1'
+                  $ref: "#/components/schemas/inline_response_200_1"
               example:
-              - id: 1
-                name: Passos
-              - id: 2
-                name: Belo Horizonte
+                - id: 1
+                  name: Passos
+                - id: 2
+                  name: Belo Horizonte
+    delete:
+      summary: Delete a city
+      description: Deletes a city by its ID.
+      parameters:
+        - name: id
+          in: query
+          description: The ID of the city to delete
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: JSON object containing the password for authentication
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
+      responses:
+        "200":
+          description: City successfully deleted
   /api/institutes:
     get:
       summary: Retrieve institutes
       description: "Retrieves a list of institutes. Supports filtering by `city` or `cityId` to find institutes within a specific city, as well as filtering by both `city` and `name`."
       parameters:
-      - name: id
-        in: query
-        description: The id of the institute
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: city
-        in: query
-        description: The name of the city (required if filtering by institute name or city)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: cityId
-        in: query
-        description: The ID of the city (alternative to `city` for filtering by city)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: name
-        in: query
-        description: The name of the institute (optional filter within a specified city)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
+        - name: id
+          in: query
+          description: The id of the institute
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: city
+          in: query
+          description: The name of the city (required if filtering by institute name or city)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: cityId
+          in: query
+          description: The ID of the city (alternative to `city` for filtering by city)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          description: The name of the institute (optional filter within a specified city)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
       responses:
         "200":
           description: List of institutes retrieved
@@ -229,59 +254,84 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/inline_response_200_1'
+                  $ref: "#/components/schemas/inline_response_200_1"
               example:
-              - id: 1
-                name: IFSULDEMINAS
-                city_id: 1
-              - id: 2
-                name: IFMG
-                city_id: 2
+                - id: 1
+                  name: IFSULDEMINAS
+                  city_id: 1
+                - id: 2
+                  name: IFMG
+                  city_id: 2
+    delete:
+      summary: Delete an institute
+      description: Deletes an institute by its ID.
+      parameters:
+        - name: id
+          in: query
+          description: The ID of the institute to delete
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: JSON object containing the password for authentication
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
+      responses:
+        "200":
+          description: Institute successfully deleted
   /api/rooms:
     get:
       summary: Retrieve rooms
       description: Retrieves a list of rooms. Either `instituteId` must be provided or a combination of `city` and `institute`.
       parameters:
-      - name: id
-        in: query
-        description: The ID of the room
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: instituteId
-        in: query
-        description: The ID of the institute
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: city
-        in: query
-        description: The name of the city (required if instituteId is not provided)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: institute
-        in: query
-        description: The name of the institute (required if instituteId is not provided)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: name
-        in: query
-        description: The name of the room
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
+        - name: id
+          in: query
+          description: The ID of the room
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: instituteId
+          in: query
+          description: The ID of the institute
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: city
+          in: query
+          description: The name of the city (required if instituteId is not provided)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: institute
+          in: query
+          description: The name of the institute (required if instituteId is not provided)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: The name of the room
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
       responses:
         "200":
           description: List of rooms retrieved
@@ -290,67 +340,92 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/inline_response_200_1'
+                  $ref: "#/components/schemas/inline_response_200_1"
               example:
-              - id: 1
-                name: Externo
-                institute_id: 1
-              - id: 2
-                name: Laboratório 1
-                institute_id: 1
+                - id: 1
+                  name: Externo
+                  institute_id: 1
+                - id: 2
+                  name: Laboratório 1
+                  institute_id: 1
+    delete:
+      summary: Delete a room
+      description: Deletes a room by its ID.
+      parameters:
+        - name: id
+          in: query
+          description: The ID of the room to delete
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: JSON object containing the password for authentication
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
+      responses:
+        "200":
+          description: Room successfully deleted
   /api/parameters:
     get:
       summary: Retrieve parameters
       description: "Retrieves parameters (air quality metrics) for a room. Either `roomId` must be provided or a combination of `city`, `institute`, and `room`."
       parameters:
-      - name: roomId
-        in: query
-        description: The ID of the room
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: city
-        in: query
-        description: The name of the city (required if roomId is not provided)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: institute
-        in: query
-        description: The name of the institute (required if roomId is not provided)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: room
-        in: query
-        description: The name of the room (required if roomId is not provided)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: name
-        in: query
-        description: "The name of the parameter (e.g., PM10)"
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: The maximum number of records to return
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
+        - name: roomId
+          in: query
+          description: The ID of the room
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: city
+          in: query
+          description: The name of the city (required if roomId is not provided)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: institute
+          in: query
+          description: The name of the institute (required if roomId is not provided)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: room
+          in: query
+          description: The name of the room (required if roomId is not provided)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: "The name of the parameter (e.g., PM10)"
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The maximum number of records to return
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
       responses:
         "200":
           description: List of parameters retrieved
@@ -359,14 +434,14 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/inline_response_200_2'
+                  $ref: "#/components/schemas/inline_response_200_2"
               example:
-              - id: 1
-                name: CO2
-                value: 400.1
-                aqi_included: false
-                timestamp: 2000-01-20T12:45:00Z
-                room_id: 1
+                - id: 1
+                  name: CO2
+                  value: 400.1
+                  aqi_included: false
+                  timestamp: 2000-01-20T12:45:00Z
+                  room_id: 1
 components:
   schemas:
     inline_response_200:

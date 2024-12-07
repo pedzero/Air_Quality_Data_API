@@ -65,9 +65,6 @@ class ParameterRepository {
     }
 
     async findAggregatedByRoomAndParameter(roomId, parameter, aqiIncluded, startDate, endDate, intervalSeconds) {
-        if (!roomId || !parameter || !aqiIncluded || !startDate || !endDate || !intervalSeconds) {
-            throw new Error("Missing required parameters for aggregated query")
-        }
         const results = await Parameter.findAll({
             attributes: [
                 [

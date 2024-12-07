@@ -34,6 +34,7 @@ historyService.getHistoricalData = async (filters) => {
     const endDate = new Date(end)
     const precisionInt = parseInt(precision, 10)
     const intervalSeconds = Math.floor((endDate - startDate) / (precisionInt * 1000))
+    const aqiIncludedBoolean = aqiIncluded === 'true';
 
     if (intervalSeconds <= 0) {
         throw new ValidationError("Invalid range or precision. Ensure the range is large enough.")
@@ -42,7 +43,7 @@ historyService.getHistoricalData = async (filters) => {
     const historicalData = await ParameterRepository.findAggregatedByRoomAndParameter(
         roomId,
         parameter.trim(),
-        aqiIncluded,
+        aqiIncludedBoolean,
         startDate,
         endDate,
         intervalSeconds,

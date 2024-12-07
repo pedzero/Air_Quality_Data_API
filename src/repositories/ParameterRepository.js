@@ -41,7 +41,6 @@ class ParameterRepository {
     }
 
     async getAverageValueByRoomIdAndName(roomId, parameterName, startTime, endTime, aqiIncluded) {
-        const aqiIncludedBoolean = aqiIncluded === 'true';
         const whereConditions = {
             name: parameterName,
             room_id: roomId,
@@ -51,7 +50,7 @@ class ParameterRepository {
         }
 
         if (aqiIncluded) {
-            whereConditions.aqi_included = aqiIncludedBoolean
+            whereConditions.aqi_included = aqiIncluded
         }
 
         const result = await Parameter.findOne({
@@ -69,7 +68,6 @@ class ParameterRepository {
         if (!roomId || !parameter || !aqiIncluded || !startDate || !endDate || !intervalSeconds) {
             throw new Error("Missing required parameters for aggregated query")
         }
-        const aqiIncludedBoolean = aqiIncluded === 'true';
         const results = await Parameter.findAll({
             attributes: [
                 [
@@ -90,7 +88,7 @@ class ParameterRepository {
                 timestamp: {
                     [Op.between]: [startDate, endDate],
                 },
-                aqi_included: aqiIncludedBoolean
+                aqi_included: aqiIncluded
             },
             replacements: { intervalSeconds },
             group: ['bucket_start'],
